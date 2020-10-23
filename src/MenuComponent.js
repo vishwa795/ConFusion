@@ -39,7 +39,6 @@ class Menu extends Component{
 
     return(
       <div>
-      <h1>Restaurante menu </h1>
       <div className="row">
       {menu}
       </div>
