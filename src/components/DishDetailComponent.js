@@ -14,7 +14,14 @@ class DishDetailComponent extends Component {
     )
   }
   render(){
-    const renderComments = this.props.dish.comments.map((c) =>{
+    if(this.props.dish == null){
+      return(
+        <div>
+        </div>
+      )
+    }
+    else{
+      const renderComments = this.props.dish.comments.map((c) =>{
       return(
         <div>
         <p>{c.comment}
@@ -41,6 +48,9 @@ class DishDetailComponent extends Component {
         </div>
         </div>
     )
+
+
+  }
   }
 }
 export default DishDetailComponent;
