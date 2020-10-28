@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Card,CardTitle, CardBody, CardImg, CardText} from 'reactstrap';
+import {Card,CardTitle, CardBody, CardImg, CardText, Breadcrumb, BreadcrumbItem} from 'reactstrap';
+import {Link} from 'react-router-dom';
   function getdate(date){
     const d = new Date(date);
     const month = ["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"];
@@ -32,27 +33,36 @@ import {Card,CardTitle, CardBody, CardImg, CardText} from 'reactstrap';
     )
   } )
   }
-  function DishDetailComponent({dish}){
+  function DishDetailComponent(props){
 
-    if(dish == null){
+    if(props.dish !=null){
       return(
-        <div>
+        <div className="container">
+          <div className="row">
+            <Breadcrumb>
+              <BreadcrumbItem><Link to="/menu"> Menu </Link></BreadcrumbItem>
+              <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+            </Breadcrumb>
+
+            <div className="col-12">
+              <h3> {props.dish.name} </h3>
+              <hr />
+            </div>
+        </div>
+          <div className="row">
+            <RenderDish dish={props.dish} />
+            <div className="col-sm-10 col-md-5 m-1">
+              <h4>Comments</h4>
+              <RenderComments comment={props.comment} />
+            </div>
+          </div>
         </div>
       )
-    }
-
-    else{
+  }
+  else{
     return(
-      <div className="row">
-        <RenderDish dish={dish} />
-        <div className="col-sm-10 col-md-5 m-1">
-        <h4>Comments</h4>
-          <RenderComments comment={dish.comments} />
-        </div>
-        </div>
+      <h1> Nothing found </h1>
     )
-
-
   }
   }
 
