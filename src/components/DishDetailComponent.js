@@ -1,6 +1,72 @@
 import React, {Component} from 'react';
-import {Card,CardTitle, CardBody, CardImg, CardText, Breadcrumb, BreadcrumbItem} from 'reactstrap';
+import {Card,CardTitle, CardBody, CardImg, CardText, Breadcrumb,Button,Modal,Row,Col,Label, ModalBody,ModalHeader, BreadcrumbItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
+import {LocalForm, Errors, Control} from 'react-redux-form';
+
+const minLength = (len) => (val) => val && (val.length >= len);
+const required = (val) => val && val.length ;
+const maxLength = (len) => (val) => !val || (val.length <= len) ;
+
+class CommentForm extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isModalOpen : false
+    }
+    this.toggleModal = this.toggleModal.bind(this);
+  }
+  toggleModal(){
+    this.setState({
+      isModalOpen : !this.state.isModalOpen
+    });
+  }
+  render(){
+
+  return(
+    <React.Fragment>
+      <Button outline onClick={this.toggleModal}>
+        <span className="fa fa-md fa-pencil"> Submit Comment </span>
+      </Button>
+      <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
+        <ModalHeader toggle={this.toggleModal}> Submit Comment </ModalHeader>
+        <ModalBody>
+          <LocalForm>
+            <Row className="form-group m-2">
+            <Label htmlFor="rating"> Rating </Label>
+            <Control.select model=".rating" id ="rating" name="rating" className="form-control">
+            <option> 1 </option>
+            <option> 2 </option>
+            <option> 3 </option>
+            <option> 4 </option>
+            <option> 5 </option>
+            </Control.select>
+            </Row>
+            <Row className="form-group m-2">
+            <Label htmlFor="name"> Your Name </Label>
+            <Control.text model=".name" id ="name" name="name" validators={{
+              minLength: minLength(3),
+              maxLength: maxLength(15)
+            }} className="form-control"/>
+            <Errors show="touched" className="text-danger" model=".name" messages={{
+              minLength : "Must be greater than 2 Characters",
+              maxLength : "Must be 15 Characters or less"
+            }} />
+            </Row>
+            <Row className="form-group m-2">
+            <Label htmlFor="comment"> Comments </Label>
+            <Control.textarea model=".comment" rows="6" id ="comment" name="comment" className="form-control"/>
+            </Row>
+            <Row className="form-group m-2">
+              <Button type="submit" value="Submit" color="primary"> Submit </Button>
+            </Row>
+          </LocalForm>
+        </ModalBody>
+      </Modal>
+    </React.Fragment>
+  )
+  }
+}
+
   function getdate(date){
     const d = new Date(date);
     const month = ["Jan","Feb","Mar","Apr","May","June","July","Aug","Sep","Oct","Nov","Dec"];
@@ -55,6 +121,7 @@ import {Link} from 'react-router-dom';
             <div className="col-sm-10 col-md-5 m-1">
               <h4>Comments</h4>
               <RenderComments comment={props.comment} />
+              <CommentForm />
             </div>
           </div>
         </div>
