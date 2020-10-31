@@ -10,5 +10,6 @@ export const initialState ={
   promotions: PROMOTIONS
 };
 export const Reducer = (state = initialState ,action) =>{
+  console.log("Reducer is called "+JSON.stringify(action));
   return state;
 }

@@ -20,6 +20,10 @@ class CommentForm extends Component {
       isModalOpen : !this.state.isModalOpen
     });
   }
+  handleSubmit(values){
+    this.props.addComment(this.props.dishId, values.rating, values.name, values.comment);
+    this.toggleModal();
+  }
   render(){
 
   return(
@@ -30,7 +34,7 @@ class CommentForm extends Component {
       <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
         <ModalHeader toggle={this.toggleModal}> Submit Comment </ModalHeader>
         <ModalBody>
-          <LocalForm>
+          <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
             <Row className="form-group m-2">
             <Label htmlFor="rating"> Rating </Label>
             <Control.select model=".rating" id ="rating" name="rating" className="form-control">
@@ -121,7 +125,7 @@ class CommentForm extends Component {
             <div className="col-sm-10 col-md-5 m-1">
               <h4>Comments</h4>
               <RenderComments comment={props.comment} />
-              <CommentForm />
+              <CommentForm addComment={props.addComment} dishId={props.dish.id} />
             </div>
           </div>
         </div>
