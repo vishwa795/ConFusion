@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Breadcrumb, BreadcrumbItem, Label, Input, Col,Button, Row} from 'reactstrap';
-import {LocalForm, Control, Errors} from 'react-redux-form';
+import {Form, Control, Errors} from 'react-redux-form';
 import {Link} from 'react-router-dom';
 
 
@@ -16,6 +16,7 @@ class Contact extends Component {
     handleSubmit(values){
       console.log("The Current state is "+JSON.stringify(values));
       alert("The Current state is "+JSON.stringify(values));
+      this.props.resetFeedbackForm();
     }
 
     render(){
@@ -53,8 +54,8 @@ class Contact extends Component {
                   <div className="col-12 col-sm-11 offset-sm-1">
                       <div className="btn-group" role="group">
                           <a role="button" className="btn btn-primary" href="tel:+85212345678"><i className="fa fa-phone"></i> Call</a>
-                          <a role="button" className="btn btn-info"><i className="fa fa-skype"></i> Skype</a>
-                          <a role="button" className="btn btn-success" href="mailto:confusion@food.net"><i className="fa fa-envelope-o"></i> Email</a>
+                          <a role="button" className="btn btn-info" href="#"><i className="fa fa-skype"></i> Skype</a>
+                          <a role="button" className="btn btn-success " href="mailto:confusion@food.net"><i className="fa fa-envelope-o"></i> Email</a>
                       </div>
                   </div>
               </div>
@@ -63,7 +64,7 @@ class Contact extends Component {
                   <h3>Send Us Your Feedback</h3>
                 </div>
                 <div className="col-12 col-md-9">
-                  <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+                  <Form model="feedback" onSubmit={(values) => this.handleSubmit(values)}>
                     <Row className="form-group">
                       <Label htmlFor="firstname" md={2} >First Name</Label>
                       <Col md={10}>
@@ -151,7 +152,7 @@ class Contact extends Component {
                         <Button type="submit" color="primary"> Send Feedback </Button>
                       </Col>
                     </Row>
-                  </LocalForm>
+                  </Form>
                 </div>
               </div>
           </div>
