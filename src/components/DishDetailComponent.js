@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Card,CardTitle, CardBody, CardImg, CardText, Breadcrumb,Button,Modal,Row,Col,Label, ModalBody,ModalHeader, BreadcrumbItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import {LocalForm, Errors, Control} from 'react-redux-form';
-
+import {Loading} from './LoadingComponent';
 const minLength = (len) => (val) => val && (val.length >= len);
 const required = (val) => val && val.length ;
 const maxLength = (len) => (val) => !val || (val.length <= len) ;
@@ -25,7 +25,6 @@ class CommentForm extends Component {
     this.toggleModal();
   }
   render(){
-
   return(
     <React.Fragment>
       <Button outline onClick={this.toggleModal}>
@@ -104,8 +103,25 @@ class CommentForm extends Component {
   } )
   }
   function DishDetailComponent(props){
-
-    if(props.dish !=null){
+    if(props.isLoading){
+      return(
+        <div className="container">
+          <div className="row">
+            <Loading />
+          </div>
+        </div>
+      )
+    }
+    else if(props.errMess){
+      return(
+        <div className="container">
+          <div className="row">
+            <h4> {props.errMess} </h4>
+          </div>
+        </div>
+      )
+    }
+    else if(props.dish !=null){
       return(
         <div className="container">
           <div className="row">
