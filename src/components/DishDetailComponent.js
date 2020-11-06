@@ -3,6 +3,7 @@ import {Card,CardTitle, CardBody, CardImg, CardText, Breadcrumb,Button,Modal,Row
 import {Link} from 'react-router-dom';
 import {LocalForm, Errors, Control} from 'react-redux-form';
 import {Loading} from './LoadingComponent';
+import {baseUrl} from '../shared/baseUrl';
 const minLength = (len) => (val) => val && (val.length >= len);
 const required = (val) => val && val.length ;
 const maxLength = (len) => (val) => !val || (val.length <= len) ;
@@ -82,7 +83,7 @@ class CommentForm extends Component {
   function RenderDish({dish}){
     return <div className="col-sm-10 col-md-5 m-1">
       <Card>
-        <CardImg width="100%" src={dish.image} />
+        <CardImg width="100%" src={baseUrl + dish.image} />
         <CardBody>
           <CardTitle><h4>{dish.name}</h4></CardTitle>
           <CardText>{dish.description}</CardText>

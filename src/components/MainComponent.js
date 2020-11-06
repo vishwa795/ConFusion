@@ -8,7 +8,7 @@ import { Route, Redirect, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Contact from './ContactComponent.js'
 import About from './AboutComponent.js';
-import {addComment, fetchDishes} from '../Redux/ActionCreators';
+import {addComment, fetchDishes, fetchComments, fetchPromos} from '../Redux/ActionCreators';
 import { actions } from 'react-redux-form';
 
 const mapStateToProps = (state) =>{
@@ -23,6 +23,8 @@ const mapStateToProps = (state) =>{
 const mapDispatchToProps = (dispatch) => ({
   addComment : (dishId, rating, author, comment) => dispatch(addComment(dishId,rating,author,comment)),
   fetchDishes : () => dispatch(fetchDishes()),
+  fetchComments : () => dispatch(fetchComments()),
+  fetchPromos: () => dispatch(fetchPromos()),
   resetFeedbackForm : () => {dispatch(actions.reset('feedback'))}
 })
 
@@ -32,14 +34,17 @@ class Main extends Component {
   }
   componentDidMount(){
     this.props.fetchDishes();
+    this.props.fetchComments();
+    this.props.fetchPromos();
   }
   render(){
     const DishWithId = ({match}) =>{
       return (
         <DishDetailComponent dish={this.props.dishes.dishes.filter((dish) => dish.id === parseInt(match.params.dishId,10))[0]}
-        comment = {this.props.comments.filter((comment)=> comment.dishId === parseInt(match.params.dishId,10))}
+        comment = {this.props.comments.comments.filter((comment)=> comment.dishId === parseInt(match.params.dishId,10))}
         isLoading = {this.props.dishes.isLoading}
         errMess = {this.props.dishes.errmess}
+        commentsErrMess = {this.props.comments.errMess}
         addComment = {this.props.addComment}
         />
       )
@@ -51,7 +56,9 @@ class Main extends Component {
         dish={this.props.dishes.dishes.filter((dish) => dish.featured)[0]}
         isLoading = {this.props.dishes.isLoading}
         errMess = {this.props.dishes.errmess}
-        promotion={this.props.promotions.filter((promo) => promo.featured)[0]}
+        promotion={this.props.promotions.promotions.filter((promo) => promo.featured)[0]}
+        promosLoading = {this.props.promotions.isLoading}
+        promosErrMess = {this.props.promotions.errMess}
         leader={this.props.leaders.filter((leader) => leader.featured)[0]}
         />
       )
