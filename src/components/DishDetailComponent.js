@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Card,CardTitle, CardBody, CardImg, CardText, Breadcrumb,Button,Modal,Row,Col,Label, ModalBody,ModalHeader, BreadcrumbItem} from 'reactstrap';
+import {Card,CardTitle, CardBody, CardImg, CardText, Breadcrumb,Button,Modal,Row,Label, ModalBody,ModalHeader, BreadcrumbItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import {LocalForm, Errors, Control} from 'react-redux-form';
 import {Loading} from './LoadingComponent';
 import {baseUrl} from '../shared/baseUrl';
+import {FadeTransform, Fade, Stagger } from 'react-animation-components';
+
 const minLength = (len) => (val) => val && (val.length >= len);
-const required = (val) => val && val.length ;
 const maxLength = (len) => (val) => !val || (val.length <= len) ;
 
 class CommentForm extends Component {
@@ -22,7 +23,7 @@ class CommentForm extends Component {
     });
   }
   handleSubmit(values){
-    this.props.addComment(this.props.dishId, values.rating, values.name, values.comment);
+    this.props.postComment(this.props.dishId, values.rating, values.name, values.comment);
     this.toggleModal();
   }
   render(){
@@ -82,26 +83,37 @@ class CommentForm extends Component {
   }
   function RenderDish({dish}){
     return <div className="col-sm-10 col-md-5 m-1">
-      <Card>
-        <CardImg width="100%" src={baseUrl + dish.image} />
-        <CardBody>
-          <CardTitle><h4>{dish.name}</h4></CardTitle>
-          <CardText>{dish.description}</CardText>
-        </CardBody>
-      </Card>
+      <FadeTransform in 
+      transformProps={{
+        exitTransform: 'scale(0.5) translateY(-50%)'
+      }} >
+        <Card>
+          <CardImg width="100%" src={baseUrl + dish.image} />
+          <CardBody>
+            <CardTitle><h4>{dish.name}</h4></CardTitle>
+            <CardText>{dish.description}</CardText>
+          </CardBody>
+        </Card>
+      </FadeTransform>
     </div>
   }
   function RenderComments({comment}){
-    return comment.map((c) =>{
+    return( 
+    <Stagger in>
+    {comment.map((c) =>{
     return(
-      <div>
-      <p>{c.comment}
-      <br />
-      -- {c.author} , {getdate(c.date)}
-      </p>
-      </div>
-    )
-  } )
+      <Fade in>
+        <div>
+            <p>{c.comment}
+            <br /> 
+            -- {c.author} , {getdate(c.date)}
+            </p>
+        </div>
+      </Fade>
+       )
+      } ) }
+  </Stagger> 
+   )
   }
   function DishDetailComponent(props){
     console.log(props);
@@ -132,7 +144,6 @@ class CommentForm extends Component {
               <BreadcrumbItem><Link to="/menu"> Menu </Link></BreadcrumbItem>
               <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
             </Breadcrumb>
-
             <div className="col-12">
               <h3> {props.dish.name} </h3>
               <hr />
@@ -142,8 +153,8 @@ class CommentForm extends Component {
             <RenderDish dish={props.dish} />
             <div className="col-sm-10 col-md-5 m-1">
               <h4>Comments</h4>
-              <RenderComments comment={props.comment} />
-              <CommentForm addComment={props.addComment} dishId={props.dish.id} />
+                <RenderComments comment={props.comment} />
+              <CommentForm postComment={props.postComment} dishId={props.dish.id} />
             </div>
           </div>
         </div>
