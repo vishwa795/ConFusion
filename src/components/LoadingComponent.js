@@ -1,10 +1,9 @@
 import React from 'react';
-import {Spinner} from 'reactstrap';
-
+import Loader from 'react-loader-spinner';
 export const Loading = () =>{
     return(
         <div className="col-12">
-            <span className="fa fa-spinner fa-pulse fa-3x fa-fw text-primary"></span>
+            <Loader type="Puff" color="#9575CD" height={45} width={45}/>
             <p>Loading . . .</p>
         </div>
     )
