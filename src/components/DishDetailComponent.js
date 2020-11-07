@@ -104,6 +104,7 @@ class CommentForm extends Component {
   } )
   }
   function DishDetailComponent(props){
+    console.log(props);
     if(props.isLoading){
       return(
         <div className="container">
