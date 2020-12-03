@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand,Jumbotron,Nav, NavbarToggler,Collapse, NavItem, Button, Modal, ModalHeader, ModalBody, Form, FormGroup, Input, Label } from 'reactstrap';
+import { Navbar, NavbarBrand,Jumbotron,Nav, NavbarToggler,Collapse, NavItem, Button, Modal, ModalHeader, ModalBody, FormGroup, Input, Label } from 'reactstrap';
+import {Form, Control} from 'react-redux-form';
+import {FacebookProvider,Login} from 'react-facebook-sdk';
+import {facebook} from '../shared/baseUrl';
 import { NavLink } from 'react-router-dom';
 class Header extends Component{
   constructor(props){
@@ -27,6 +30,13 @@ class Header extends Component{
     alert("Username: "+this.username.value+" Password: "+this.password.value+" Remeber:"+this.remember.checked);
     event.preventDefault();
 
+  }
+  handleResponse = (data) => {
+    console.log(data);
+  }
+ 
+  handleError = (error) => {
+    this.setState({ error });
   }
   render(){
     return(
@@ -83,22 +93,29 @@ class Header extends Component{
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
           <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
             <ModalBody>
-              <Form onSubmit={this.handleLogin}>
+              <Form model="feedback" onSubmit={this.handleLogin}>
                 <FormGroup>
-                  <Label htmlFor="username"> Username </Label>
-                  <Input type="text" name="username" id="username" innerRef={(input) => this.username = input}/>
+                  <Label htmlFor="username" model=".username"> Username </Label>
+                  <Control.text model=".username" name="username" id="username" className="form-control" />
                 </FormGroup>
                 <FormGroup>
-                  <Label htmlFor="password"> Password </Label>
-                  <Input type="password" name="password" id="password" innerRef={(input) => this.password = input}/>
+                  <Label htmlFor="password" model=".password"> Password </Label>
+                  <Control.password model=".password" name="password" id="password" className="form-control" />
                 </FormGroup>
-                <FormGroup check>
-                  <Label check>
-                    <Input type="checkbox" name="remember" innerRef={(input) => this.remember = input} />
-                    Remeber Me
-                  </Label>
+                <center>
+                <FormGroup>
+                  <FacebookProvider appId={facebook.clientId}>
+                    <Login
+                      scope="email"
+                      onResponse={this.handleResponse}
+                      onError={this.handleError}
+                    >
+                      <Button className="btn-facebook"><span className="fa fa-lg fa-facebook"></span> Login via Facebook</Button>
+                    </Login>
+                  </FacebookProvider>
                 </FormGroup>
                 <Button type="submit" color="primary" onClick={this.handleSubmit} >Submit</Button>
+                </center>
               </Form>
             </ModalBody>
         </Modal>

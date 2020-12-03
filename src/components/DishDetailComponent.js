@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Card,CardTitle, CardBody, CardImg, CardText, Breadcrumb,Button,Modal,Row,Label, ModalBody,ModalHeader, BreadcrumbItem} from 'reactstrap';
+import React, {Component, useState} from 'react';
+import {Card,CardTitle, CardBody, CardImg,CardImgOverlay, CardText, Breadcrumb,Button,Modal,Row,Label, ModalBody,ModalHeader, BreadcrumbItem} from 'reactstrap';
 import {Link} from 'react-router-dom';
 import {LocalForm, Errors, Control} from 'react-redux-form';
 import {Loading} from './LoadingComponent';
@@ -13,11 +13,10 @@ class CommentForm extends Component {
   constructor(props){
     super(props);
     this.state = {
-      isModalOpen : false
+      isModalOpen : false,
     }
-    this.toggleModal = this.toggleModal.bind(this);
   }
-  toggleModal(){
+  toggleModal = ()=> {
     this.setState({
       isModalOpen : !this.state.isModalOpen
     });
@@ -82,20 +81,38 @@ class CommentForm extends Component {
     )
   }
   function RenderDish({dish}){
-    return <div className="col-sm-10 col-md-5 m-1">
+
+    const [clicked,clickStatus] = useState(false);
+
+    const toggleLike = () => {
+      console.log(clicked);
+      clickStatus(!clicked);
+    }
+    return (
+    <div className="col-sm-10 col-md-5 m-1">
       <FadeTransform in 
       transformProps={{
         exitTransform: 'scale(0.5) translateY(-50%)'
       }} >
         <Card>
           <CardImg width="100%" src={baseUrl + dish.image} />
+          <CardImgOverlay>
+            <Button outline color="dark" onClick={toggleLike}>
+              {
+                clicked ?
+                <span className="fa fa-md fa-heart" />
+                :
+                <span className="fa fa-md fa-heart-o" />
+              }
+            </Button>
+            </CardImgOverlay>
           <CardBody>
             <CardTitle><h4>{dish.name}</h4></CardTitle>
             <CardText>{dish.description}</CardText>
           </CardBody>
         </Card>
       </FadeTransform>
-    </div>
+    </div>)
   }
   function RenderComments({comment}){
     return( 
@@ -154,7 +171,7 @@ class CommentForm extends Component {
             <div className="col-sm-10 col-md-5 m-1">
               <h4>Comments</h4>
                 <RenderComments comment={props.comment} />
-              <CommentForm postComment={props.postComment} dishId={props.dish.id} />
+              <CommentForm postComment={props.postComment} dishId={props.dish._id} />
             </div>
           </div>
         </div>

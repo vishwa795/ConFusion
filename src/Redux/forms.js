@@ -7,3 +7,9 @@ export const InitialFeedbackState = {
     contactType: 'Tel.',
     message: ''
 }
+
+export const InitialLoginState = {
+    username:'',
+    password:'',
+    rememberme:true
+}

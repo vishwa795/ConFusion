@@ -42,8 +42,8 @@ class Main extends Component {
   render(){
     const DishWithId = ({match}) =>{
       return (
-        <DishDetailComponent dish={this.props.dishes.dishes.filter((dish) => dish.id === parseInt(match.params.dishId,10))[0]}
-        comment = {this.props.comments.comments.filter((comment)=> comment.dishId === parseInt(match.params.dishId,10))}
+        <DishDetailComponent dish={this.props.dishes.dishes.filter((dish) => dish._id === match.params.dishId)[0]}
+        comment = {this.props.comments.comments.filter((comment)=> comment.dish === match.params.dishId)}
         isLoading = {this.props.dishes.isLoading}
         errMess = {this.props.dishes.errmess}
         commentsErrMess = {this.props.comments.errMess}

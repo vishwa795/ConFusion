@@ -52,3 +52,7 @@ address{
     transform: translateX(-100%);
     transition: all 300ms ease-out;
 }
+
+.btn-facebook{
+    background-color: #3b5998;
+}
