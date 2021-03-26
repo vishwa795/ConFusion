@@ -14,3 +14,10 @@ export const ADD_PROMOS = "ADD_PROMOS";
 export const LEADERS_LOADING = "LEADERS_LOADING";
 export const ADD_LEADERS = "ADD_LEADERS";
 export const LEADERS_FAILED = "LEADERS_FAILED";
+
+export const USER_LOADING = "USER_LOADING";
+export const USER_FAILED = "USER_FAILED";
+
+export const USER_LOGIN_INIT = "USER_LOGIN";
+export const USER_LOGIN_SUCCESS = "USER_LOGIN_SUCCESS";
+export const USER_LOGIN_FAILED = "USER_LOGIN_FAILED";

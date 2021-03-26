@@ -8,7 +8,7 @@ import { Route, Redirect, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Contact from './ContactComponent.js'
 import About from './AboutComponent.js';
-import {postComment, fetchDishes, fetchComments, fetchPromos, fetchLeaders, postFeedback} from '../Redux/ActionCreators';
+import {postComment, fetchDishes, fetchComments, fetchPromos,fetchUser, fetchLeaders, postFeedback, fbLogin,loginUser} from '../Redux/ActionCreators';
 import { actions } from 'react-redux-form';
 import {TransitionGroup,CSSTransition} from 'react-transition-group';
 
@@ -18,12 +18,16 @@ const mapStateToProps = (state) =>{
     dishes : state.dishes,
     comments: state.comments,
     promotions: state.promotions,
-    leaders: state.leaders
+    leaders: state.leaders,
+    user: state.user
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
+  fetchUser:(token) => dispatch(fetchUser(token)),
+  loginUser: (username,password) => dispatch(loginUser(username,password)),
   postComment : (dishId, rating, author, comment) => dispatch(postComment(dishId,rating,author,comment)),
+  fbLogin: (accessToken) => dispatch(fbLogin(accessToken)),
   fetchDishes : () => dispatch(fetchDishes()),
   fetchComments : () => dispatch(fetchComments()),
   fetchPromos: () => dispatch(fetchPromos()),
@@ -34,6 +38,11 @@ const mapDispatchToProps = (dispatch) => ({
 
 class Main extends Component {
   componentDidMount(){
+    let token = localStorage.getItem("token");
+    if(token != null ){
+      this.props.fetchUser(token);
+      //console.log(this.props.user," from main component!");
+    }
     this.props.fetchDishes();
     this.props.fetchComments();
     this.props.fetchPromos();
@@ -69,7 +78,12 @@ class Main extends Component {
     }
     return (
       <div>
-        <Header />
+        <Header 
+        fbLogin = {this.props.fbLogin}
+        loginUser = {this.props.loginUser}
+        user = {this.props.user.user}
+        isLoggedIn = {this.props.user.isLoggedIn}
+        />
         <TransitionGroup>
             <CSSTransition key={this.props.location.key} classNames="page" timeout={300}>
             <Switch location={this.props.location}>

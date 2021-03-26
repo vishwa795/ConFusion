@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand,Jumbotron,Nav, NavbarToggler,Collapse, NavItem, Button, Modal, ModalHeader, ModalBody, FormGroup, Input, Label } from 'reactstrap';
+import { Navbar, NavbarBrand,Jumbotron,Nav, NavbarToggler,Collapse, NavItem,UncontrolledDropdown,DropdownToggle,DropdownMenu,DropdownItem, Button, Modal, ModalHeader, ModalBody, FormGroup, Input, Label } from 'reactstrap';
 import {Form, Control} from 'react-redux-form';
 import {FacebookProvider,Login} from 'react-facebook-sdk';
 import {facebook} from '../shared/baseUrl';
@@ -25,14 +25,15 @@ class Header extends Component{
       isNavOpen : !this.state.isNavOpen
     })
   }
-  handleLogin(event){
+  handleLogin(values){
     this.toggleModal();
-    alert("Username: "+this.username.value+" Password: "+this.password.value+" Remeber:"+this.remember.checked);
-    event.preventDefault();
+    this.props.loginUser(values.username, values.password);
 
   }
   handleResponse = (data) => {
-    console.log(data);
+    this.toggleModal();
+    let accessToken = data.tokenDetail.accessToken;
+    this.props.fbLogin(accessToken);
   }
  
   handleError = (error) => {
@@ -70,13 +71,41 @@ class Header extends Component{
                   </NavLink>
                 </NavItem>
               </Nav>
-              <Nav className="ml-auto" navbar>
-                <NavItem>
-                  <Button outline onClick={this.toggleModal}>
-                  <span className="fa fa-lg fa-sign-in" /> Login
-                  </Button>
-                </NavItem>
-              </Nav>
+              { this.props.isLoggedIn?
+              <React.Fragment>
+                <Nav className="ml-auto" navbar>
+                <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav color="dark">
+                    <span className="fa fa-lg fa-user" /> {this.props.user.username}
+                  </DropdownToggle>
+                    <DropdownMenu right>
+                      <DropdownItem>
+                        <NavLink className="nav-link text-dark" to="/home">My Favorites</NavLink>
+                      </DropdownItem>
+                      <DropdownItem divider />
+                      <DropdownItem>
+                        Reserve a Table
+                      </DropdownItem>
+                    </DropdownMenu>
+            </UncontrolledDropdown>
+                </Nav>
+                <Nav className="p-2" navbar>
+                  <NavItem>
+                    <Button outline >
+                      <span className="fa fa-lg fa-sign-out" /> LogOut
+                    </Button>
+                  </NavItem>
+                </Nav>
+               </React.Fragment>
+               :
+               <Nav className="ml-auto" navbar>
+                  <NavItem>
+                    <Button outline onClick={this.toggleModal}>
+                    <span className="fa fa-lg fa-sign-in" /> Login
+                    </Button>
+                  </NavItem>
+                </Nav>
+              }
             </Collapse>
           </div>
         </Navbar>
@@ -93,7 +122,7 @@ class Header extends Component{
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
           <ModalHeader toggle={this.toggleModal}>Login</ModalHeader>
             <ModalBody>
-              <Form model="feedback" onSubmit={this.handleLogin}>
+              <Form model="login" onSubmit={this.handleLogin}>
                 <FormGroup>
                   <Label htmlFor="username" model=".username"> Username </Label>
                   <Control.text model=".username" name="username" id="username" className="form-control" />

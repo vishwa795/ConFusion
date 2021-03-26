@@ -4,6 +4,142 @@ export const addComment = (comment) => ({
     type : ActionTypes.ADD_COMMENT,
     payload : comment
 })
+
+
+// redux thunk middlewares for posting feedback to server.
+export const fetchUser = (token) => (dispatch) => {
+    dispatch(userLoading());
+    fetch(baseUrl+"users/checkJWTtoken", {
+        method:"GET",
+        headers:{
+            "Content-Type":"application/json",
+            "Authorization":"bearer "+token
+        },
+        credentials:"same-origin"
+    })
+    .then(response =>{
+        if(response.ok){
+            return response;
+        }
+        else{
+            var error = new Error("Error: "+response.status+" "+response.statusText);
+            error.response = response;
+            throw error;
+        }
+    },error =>{
+        var err = new Error(error.message);
+        throw err; 
+    })
+    .then(res=>res.json())
+    .then(response =>{
+        if(response.success){
+            dispatch(addUser(response));
+        }
+        else{
+            var err = new Error(response.status);
+            err.statusCode = response.statusCode;
+            throw err;
+        }
+    }, error =>{
+        var err = new Error("Error "+error.message);
+        throw err;
+    })
+    .catch(error =>{
+        localStorage.removeItem("token");
+        dispatch(userFailed(error.message));
+    })
+}
+
+
+
+export const fbLogin = (accessToken)=> (dispatch) => {
+    dispatch(userLoading());
+    //console.log("AccessToken is ",accessToken);
+    fetch(baseUrl+"users/facebook/token", {
+        method:"GET",
+        headers:{
+            "Content-Type":"application/json",
+            "Authorization":"Bearer "+accessToken
+        },
+        credentials:"same-origin"
+    })
+    .then(response =>{
+        if(response.ok){
+            return response;
+        }
+        else{
+            var error = new Error("Error: "+response.status+" "+response.statusText);
+            error.response = response;
+            throw error;
+        }
+    },error =>{
+        var err = new Error(error.message);
+        throw err; 
+    })
+    .then(res=>res.json())
+    .then(response =>{
+        if(response.success){
+            localStorage.setItem("token",response.token);
+            dispatch(addUser(response));
+        }
+        else{
+            var err = new Error(response.status);
+            err.statusCode = response.statusCode;
+            throw err;
+        }
+    }, error =>{
+        var err = new Error("Error "+error.message);
+        throw err;
+    })
+    .catch(error =>{
+        dispatch(userFailed(error.message));
+    })
+
+}
+
+export const loginUser = (username, password) => (dispatch) =>{
+    dispatch(userLoading());
+    let user = {
+        username: username,
+        password: password
+    }
+    fetch(baseUrl+"users/login",{
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json",
+        },
+        body:JSON.stringify(user),
+        credentials:"same-origin"
+    })
+    .then(response =>{
+        if(response.ok){
+            return response;
+        }
+        else{
+            var err = new Error("Error: "+response.status+" "+response.statusText);
+            err.response = response;
+            throw err;
+        }
+    })
+    .then(response => response.json())
+    .then(response =>{
+        if(response.success){
+            localStorage.setItem("token",response.token);
+            dispatch(addUser(response));
+        }
+        else{
+            var err = new Error(response.status);
+            err.statusCode = response.statusCode;
+            throw err;
+        }
+    }, error =>{
+        var err = new Error(error.message);
+        throw err;
+    })
+    .catch(error => dispatch(userFailed(error)))
+}
+
+
 export const postComment = (dishId, rating, author, comment) => (dispatch) => {
     const newComment = {
         dishId : dishId,
@@ -108,6 +244,20 @@ export const fetchDishes = () => (dispatch) => {
         .catch(error => dispatch(dishesFailed(error.message)))
 }
 
+export const userLoading = () =>({
+    type:ActionTypes.USER_LOADING
+});
+
+export const addUser = (User) =>({
+    type:ActionTypes.USER_LOGIN_SUCCESS,
+    payload:User
+});
+
+export const userFailed = (response) =>({
+    type:ActionTypes.USER_LOGIN_FAILED,
+    payload:response
+});
+
 export const dishesLoading = () =>({
     type: ActionTypes.DISHES_LOADING
 })
@@ -134,7 +284,7 @@ export const fetchComments = () => (dispatch) => {
             }
         }, 
         error => {
-            var errMess = new Error(error.message);
+            var errMess = new Error(error.message+" URL");
             throw errMess;
         })
         .then(response => response.json())

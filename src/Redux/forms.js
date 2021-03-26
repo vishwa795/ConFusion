@@ -10,6 +10,5 @@ export const InitialFeedbackState = {
 
 export const InitialLoginState = {
     username:'',
-    password:'',
-    rememberme:true
+    password:''
 }
